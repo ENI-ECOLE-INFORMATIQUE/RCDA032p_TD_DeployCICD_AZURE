@@ -27,6 +27,8 @@ jobs:
           tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_00d3e5e0deac4669949856d83258a013 }}/rcda032toazuredevops:${{ github.sha }}
           file: ./Dockerfile
   deploy:
+      permissions:
+        contents: write
       runs-on: ubuntu-latest
       needs: build
       environment:
