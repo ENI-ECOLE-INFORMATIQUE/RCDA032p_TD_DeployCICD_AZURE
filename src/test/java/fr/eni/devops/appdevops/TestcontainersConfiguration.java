@@ -1,0 +1,8 @@
+package fr.eni.devops.appdevops;
+
+import org.springframework.boot.test.context.TestConfiguration;
+
+@TestConfiguration(proxyBeanMethods = false)
+class TestcontainersConfiguration {
+
+}

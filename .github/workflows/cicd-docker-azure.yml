@@ -1,0 +1,48 @@
+name: Build and deploy Spring Boot App To Azure From Docker Image
+on:
+  push:
+     # Au push sur quelle branche doit s'exécuter ce workflow
+    branches: [ toAzure ]
+
+env:
+  AZURE_WEBAPP_NAME: app-demo-docker # Indiquer le nom de votre web app
+  TAG: 1.0 # Le numéro du tag
+  AZURE_WEBAPP_PACKAGE_PATH: ${{ github.workspace }} # Définir le chemin d'accès à la web app.
+  JAVA_VERSION: 17 # Définir la verison de Java
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout App
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: mvn package --file pom.xml
+
+      - name: Install with Maven
+        run: mvn install
+
+      - name: Build Docker Image
+        run: docker build -t thomas4991/${{ env.AZURE_WEBAPP_NAME }} .
+
+      - name: Log in to Docker Hub
+        run : echo ${{ secrets.DOCKER_HUB_TOKEN}} | docker login -u ${{secrets.DOCKER_HUB_USERNAME}} --password-stdin
+
+      - name: Push Docker image
+        run : docker push thomas4991/${{ env.AZURE_WEBAPP_NAME }}
+
+      - name: 'Deploy to Azure WebApp'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{secrets.AZURE_WEBAPP_PUBLISH_PROFILE_DOCKER}}
+          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/target/*.jar'
