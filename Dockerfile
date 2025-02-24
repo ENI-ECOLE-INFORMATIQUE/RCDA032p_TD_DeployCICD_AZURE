@@ -16,7 +16,7 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # Étape 2 : Runtime
-FROM openjdk:17-jre-slim
+FROM openjdk:17
 
 # Définir le répertoire de travail
 WORKDIR /app
