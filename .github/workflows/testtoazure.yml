@@ -41,5 +41,5 @@ jobs:
           with:
             app-name: 'RCDA032pmonapp'
             slot-name: 'Production'
-            publish-profile: ${{ secrets.AzureAppService_PublishProfile_effd53020a064841a6730352e56dc039 }}
+            publish-profile: ${{ secrets_AzureAppService_PublishProfile_effd53020a064841a6730352e56dc039 }}
             images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_00d3e5e0deac4669949856d83258a013 }}/dsanchezeni/rcda032toazuredevops:${{ github.sha }}'
